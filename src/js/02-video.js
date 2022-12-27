@@ -14,8 +14,12 @@ player.on(
 );
 
 player.on(
-  'play',
-  player.setCurrentTime(localStorage.getItem('videoplayer-current-time'))
+  'play', () => {
+    const value = localStorage.getItem('videoplayer-current-time');
+    if (value) {
+      player.setCurrentTime(value)
+    }
+  }
 );
 
 player.getVideoTitle().then(function (title) {
