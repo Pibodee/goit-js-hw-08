@@ -1,20 +1,29 @@
 import throttle from "lodash.throttle";
 
 const LOCALSTORAGE_KEY = 'feedback-form-state';
-const formData = {};
+const form = document.querySelector('.feedback-form');
+const email = document.querySelector('[name="email"]')
+const message = document.querySelector('[name="message"]');
 
-const form = document.querySelector('.feedback-form')
 addText();
+const formData = {
+  [email.name]: email.value,
+  [message.name]: message.value,
+};
 
-form.addEventListener('input', throttle(evt => {
-    formData[evt.target.name] = evt.target.value;
+localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(formData));
+
+
+form.addEventListener('input', throttle(() => {
+    formData[email.name] = email.value;
+    formData[message.name] = message.value;
     localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(formData));
 }, 500))
 
 form.addEventListener('submit', evt => {
     evt.preventDefault();
     evt.currentTarget.reset();
-    console.log(localStorage.getItem(LOCALSTORAGE_KEY));
+    console.log(formData);
     localStorage.removeItem(LOCALSTORAGE_KEY)
     
 })
@@ -22,14 +31,10 @@ form.addEventListener('submit', evt => {
 
 function addText() {
     const values = localStorage.getItem(LOCALSTORAGE_KEY);
-    if (values) {
-        const text = JSON.parse(values);
-        if(text.email){form.email.value = text.email;}
-        else { form.email.value = '' }
-         if (text.message) {
-           form.message.value = text.message;
-         } else {
-           form.message.value = '';
-         }
-    }
+      const text = JSON.parse(values);
+      if (!text) {
+        return;
+      }
+      email.value = text.email;
+      message.value = text.message;  
 }
