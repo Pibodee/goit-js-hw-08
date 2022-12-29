@@ -7,20 +7,22 @@ player.on(
   'timeupdate',
   throttle(function (currentTime) {
     localStorage.setItem(
-      'videoplayer-current-time',
-      JSON.stringify(currentTime.seconds)
+      'videoplayer-current-time',currentTime.seconds
     );
   }, 1000)
 );
 
-player.on(
-  'play', () => {
-    const value = localStorage.getItem('videoplayer-current-time');
-    if (value) {
-      player.setCurrentTime(value)
+player
+  .setCurrentTime(localStorage.getItem('videoplayer-current-time'))
+  .catch(function (error) {
+    switch (error.name) {
+      case 'RangeError':
+        break;
+
+      default:
+        break;
     }
-  }
-);
+  });
 
 player.getVideoTitle().then(function (title) {
   console.log('title:', title);
